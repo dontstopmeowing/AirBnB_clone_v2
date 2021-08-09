@@ -122,12 +122,12 @@ class HBNBCommand(cmd.Cmd):
             key_name, value = arg.split('=', 1)
             if value:
                 if value[0] == '"' and value[-1] == '"':
-                    flags = 0
+                    _str = 0
                     for i in range(len(value) - 2):
                         if value[i + 1] == '"' and value[i] != '\\':
                             flags = 1
                             break
-                    if flags == 0:
+                    if _str == 0:
                         value = value.replace('\\"', '"')
                         value = value.replace('_', ' ')
                         new_dict[key_name] = value[1:-1]
