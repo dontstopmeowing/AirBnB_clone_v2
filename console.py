@@ -73,7 +73,7 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if pline[0] == '{' and pline[-1] =='}'\
+                    if pline[0] == '{' and pline[-1] == '}'\
                             and type(eval(pline)) is dict:
                         _args = pline
                     else:
@@ -113,18 +113,48 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
+    @staticmethod
+    def key_value_verify(args):
+        args = args.split()
+        _class = args.pop(0)
+        new_dict = {}
+        for arg in args:
+            key_name, value = arg.split('=', 1)
+            if value:
+                if value[0] == '"' and value[-1] == '"':
+                    flags = 0
+                    for i in range(len(value) - 2):
+                        if value[i + 1] == '"' and value[i] != '\\':
+                            flags = 1
+                            break
+                    if flags == 0:
+                        value = value.replace('\\"', '"')
+                        value = value.replace('_', ' ')
+                        new_dict[key_name] = value[1:-1]
+                else:
+                    try:
+                        new_dict[key_name] = int(value)
+                    except ValueError:
+                        try:
+                            new_dict[key_name] = float(value)
+                        except ValueError:
+                            pass
+        return _class, new_dict
+
     def do_create(self, args):
         """ Create an object of any class"""
         if not args:
             print("** class name missing **")
             return
-        elif args not in HBNBCommand.classes:
+        args, didi = self.key_value_verify(args)
+        if args not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
         new_instance = HBNBCommand.classes[args]()
-        storage.save()
+        new_instance.__dict__.update(didi)
+        new_instance.save()
         print(new_instance.id)
-        storage.save()
+        print(new_instance)
 
     def help_create(self):
         """ Help information for the create method """
