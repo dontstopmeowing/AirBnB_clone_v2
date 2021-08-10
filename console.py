@@ -125,7 +125,7 @@ class HBNBCommand(cmd.Cmd):
                     _str = 0
                     for i in range(len(value) - 2):
                         if value[i + 1] == '"' and value[i] != '\\':
-                            flags = 1
+                            _str = 1
                             break
                     if _str == 0:
                         value = value.replace('\\"', '"')
