@@ -39,3 +39,15 @@ class DBStorage():
                 list += self.__session.query(cls)
         # return <class-name>.<object-id>
         return {type(c).__name__ + '.' + c.id: c for c in list}
+
+    def new(self, obj):
+        """add the object to the current database"""
+        self.__session.add(obj)
+
+    def save(self):
+        """commit all changes of the current database"""
+        self.__session.commit()
+
+    def delete(self, obj=None):
+        """delete from the current database"""
+        self.__session.delete(obj)
