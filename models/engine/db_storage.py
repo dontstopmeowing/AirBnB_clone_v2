@@ -3,7 +3,7 @@
 DBStorage, module
 to storage"""
 from os import getenv
-from sqlalchemy import create_engine, metadata
+from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.orm.session import Session
 
@@ -13,7 +13,7 @@ from models.user import User
 from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
-from models.base_model import BaseModel, Base
+from models.base_model import Base
 
 
 class DBStorage():
