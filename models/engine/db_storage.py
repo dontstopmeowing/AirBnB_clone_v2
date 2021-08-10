@@ -3,7 +3,9 @@
 DBStorage, module
 to storage"""
 from os import getenv
-from sqlalchemy import create_engine, MetaData
+from sqlalchemy import create_engine, metadata
+from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.orm.session import Session
 
 from models.state import State
 from models.city import City
@@ -11,6 +13,7 @@ from models.user import User
 from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
+from models.base_model import BaseModel, Base
 
 
 class DBStorage():
@@ -51,3 +54,10 @@ class DBStorage():
     def delete(self, obj=None):
         """delete from the current database"""
         self.__session.delete(obj)
+
+    def reload(self):
+        """Reaload data"""
+        Base.metadata.create_all(self.__engine)
+        sess = sessionmaker(bind=self.__engine, expire_on_commit=False)
+        Session = scoped_session(sess)
+        self.__session = Session()
