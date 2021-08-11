@@ -10,6 +10,7 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
+import shlex
 
 
 class HBNBCommand(cmd.Cmd):
@@ -113,47 +114,29 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
-    @staticmethod
-    def key_value_verify(args):
-        args = args.split()
-        _class = args.pop(0)
-        new_dict = {}
-        for arg in args:
-            key_name, value = arg.split('=', 1)
-            if value:
-                if value[0] == '"' and value[-1] == '"':
-                    _str = 0
-                    for i in range(len(value) - 2):
-                        if value[i + 1] == '"' and value[i] != '\\':
-                            _str = 1
-                            break
-                    if _str == 0:
-                        value = value.replace('\\"', '"')
-                        value = value.replace('_', ' ')
-                        new_dict[key_name] = value[1:-1]
-                else:
-                    try:
-                        new_dict[key_name] = int(value)
-                    except ValueError:
-                        try:
-                            new_dict[key_name] = float(value)
-                        except ValueError:
-                            pass
-        return _class, new_dict
-
     def do_create(self, args):
+        argus = args.split()
         """ Create an object of any class"""
         if not args:
             print("** class name missing **")
             return
-        args, didi = self.key_value_verify(args)
-        if args not in HBNBCommand.classes:
+        if argus[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[args]()
-        new_instance.__dict__.update(didi)
-        new_instance.save()
+        new_instance = HBNBCommand.classes[argus[0]]()
+        for item in argus[1:]:
+            key, value = item.split("=", 1)
+            _value = value.replace('_', ' ')
+            if _value[0] != '\"' and '.' in _value:
+                _value = float(_value)
+            elif _value[0] != '\"':
+                _value = int(_value)
+            else:
+                _value = shlex.split(_value)[0]
+            setattr(new_instance, key, _value)
+        storage.save
         print(new_instance.id)
+        storage.save()
 
     def help_create(self):
         """ Help information for the create method """
