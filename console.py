@@ -114,29 +114,48 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
+    @staticmethod
+    def key_value_verify(args):
+        """Function that verifies a key and its value."""
+        args = args.split()
+        base = args.pop(0)
+        new_dict = {}
+        for arg in args:
+            value, key = arg.split('=', 1)
+            if key:
+                if key[0] == '"' and key[-1] == '"':
+                    _str = 0
+                    for i in range(len(key) - 2):
+                        if key[i + 1] == '"' and key[i] != '\\':
+                            _str = 1
+                            break
+                    if _str == 0:
+                        key = key.replace('\\"', '"')
+                        key = key.replace('_', ' ')
+                        new_dict[value] = key[1:-1]
+                else:
+                    try:
+                        new_dict[value] = int(key)
+                    except ValueError:
+                        try:
+                            new_dict[value] = float(key)
+                        except ValueError:
+                            pass
+        return base, new_dict
+
     def do_create(self, args):
-        argus = args.split()
         """ Create an object of any class"""
         if not args:
             print("** class name missing **")
             return
-        if argus[0] not in HBNBCommand.classes:
+        args, new_dict = self.key_value_verify(args)
+        if args not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[argus[0]]()
-        for item in argus[1:]:
-            k = item.split("=")[0]
-            v = item.split("=")[1].replace('_', ' ')
-            if v[0] != '\"' and '.' in v:
-                v = float(v)
-            elif v[0] != '\"':
-                v = int(v)
-            else:
-                v = shlex.split(v)
-            setattr(new_instance, k, v)
-        storage.save()
+        new_instance = HBNBCommand.classes[args]()
+        new_instance.__dict__.update(new_dict)
+        new_instance.save()
         print(new_instance.id)
-        storage.save()
 
     def help_create(self):
         """ Help information for the create method """
@@ -214,15 +233,15 @@ class HBNBCommand(cmd.Cmd):
         print_list = []
 
         if args:
-            args = args.split(' ')[0]  # remove possible trailing args
+            args = args.split(' ')[0]
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            for k, v in storage._FileStorage__objects.items():
+            for k, v in storage.all().items():
                 if k.split('.')[0] == args:
                     print_list.append(str(v))
         else:
-            for k, v in storage._FileStorage__objects.items():
+            for k, v in storage.all().items():
                 print_list.append(str(v))
 
         print(print_list)

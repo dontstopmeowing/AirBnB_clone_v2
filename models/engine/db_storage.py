@@ -36,15 +36,19 @@ class DBStorage():
 
     def all(self, cls=None):
         """All method"""
-        classes = {State, City, User, Place, Amenity, Review}
         list = {}
-        for clss in classes:
-            if cls is None or cls is classes[clss] or cls is clss:
-                objects = self.__session.query(classes[clss]).all_states.keys()
-                for object in objects:
-                    key = object.__class__.__name__ + '.' + object._id
-                    list[key] = object
-        return (list)
+        classes = {'State': State, 'City': City, 'User': User,
+                   'Place': Place, 'Review': Review, "Amenity": Amenity}
+        if cls is None:
+            for k, v in classes.items():
+                key = self.__session.key(v).all()
+                for object in key:
+                    list[object.__class__.__name__ + "." + str(object.id)] = object
+        else:
+            key = self.__session.key(cls).all()
+            for object in key:
+                list[object.__class__.__name__ + "." + str(object.id)] = object
+        return list
 
     def new(self, obj):
         """add the object to the current database"""
