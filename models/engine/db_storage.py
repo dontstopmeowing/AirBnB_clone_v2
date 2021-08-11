@@ -35,20 +35,20 @@ class DBStorage():
             Base.drop_all(self.__engine)
 
     def all(self, cls=None):
-        """All method"""
-        list = {}
+        """Returns a dictionary of models currently in storage"""
+        dic_obj = {}
         classes = {'State': State, 'City': City, 'User': User,
                    'Place': Place, 'Review': Review, "Amenity": Amenity}
         if cls is None:
             for k, v in classes.items():
-                key = self.__session.key(v).all()
-                for object in key:
-                    list[object.__class__.__name__ + "." + str(object.id)] = object
+                query = self.__session.query(v).all()
+                for obj in query:
+                    dic_obj[obj.__class__.__name__ + "." + str(obj.id)] = obj
         else:
-            key = self.__session.key(cls).all()
-            for object in key:
-                list[object.__class__.__name__ + "." + str(object.id)] = object
-        return list
+            query = self.__session.query(cls).all()
+            for obj in query:
+                dic_obj[obj.__class__.__name__ + "." + str(obj.id)] = obj
+        return dic_obj
 
     def new(self, obj):
         """add the object to the current database"""
