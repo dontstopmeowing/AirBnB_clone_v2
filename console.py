@@ -125,16 +125,16 @@ class HBNBCommand(cmd.Cmd):
             return
         new_instance = HBNBCommand.classes[argus[0]]()
         for item in argus[1:]:
-            key, value = item.split("=", 1)
-            _value = value.replace('_', ' ')
-            if _value[0] != '\"' and '.' in _value:
-                _value = float(_value)
-            elif _value[0] != '\"':
-                _value = int(_value)
+            key = item.split("=")[0]
+            value = item.split("=")[1].replace('_', ' ')
+            if value[0] != '\"' and '.' in value:
+                value = float(value)
+            elif value[0] != '\"':
+                value = int(value)
             else:
-                _value = shlex.split(_value)[0]
-            setattr(new_instance, key, _value)
-        storage.save
+                value = shlex.split(value)
+            setattr(new_instance, key, value)
+        storage.save()
         print(new_instance.id)
         storage.save()
 
