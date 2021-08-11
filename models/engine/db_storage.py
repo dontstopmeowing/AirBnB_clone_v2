@@ -2,10 +2,10 @@
 """Change filestorage to
 DBStorage, module
 to storage"""
+
 from os import getenv
-from sqlalchemy import create_engine, MetaData
+from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
-from sqlalchemy.orm.session import Session
 
 from models.state import State
 from models.city import City
@@ -23,6 +23,7 @@ class DBStorage():
 
     def __init__(self):
         """Initialization"""
+        HBNB_ENV = 'HBNB_ENV'
         self.__engine = create_engine(
             'mysql+mysqldb://{}:{}@{}:3306/{}'
             .format(getenv('HBNB_MYSQL_USER'),
@@ -30,18 +31,20 @@ class DBStorage():
                     getenv('HBNB_MYSQL_HOST'),
                     getenv('HBNB_MYSQL_DB')),
             pool_pre_ping=True)
+        if HBNB_ENV == "test":
+            Base.drop_all(self.__engine)
 
     def all(self, cls=None):
         """All method"""
-        clsss = [State, City, User, Place, Amenity, Review]
-        list = []
-        if cls:
-            list = self.__session.query(cls)
-        else:
-            for cls in clsss:
-                list += self.__session.query(cls)
-        # return <class-name>.<object-id>
-        return {type(c).__name__ + '.' + c.id: c for c in list}
+        classes = {State, City, User, Place, Amenity, Review}
+        list = {}
+        for clss in classes:
+            if cls is None or cls is classes[clss] or cls is clss:
+                objects = self.__session.query(classes[clss]).all_states.keys()
+                for object in objects:
+                    key = object.__class__.__name__ + '.' + object._id
+                    list[key] = object
+        return (list)
 
     def new(self, obj):
         """add the object to the current database"""
