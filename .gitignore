@@ -8,6 +8,7 @@ models/__pycache__/city.cpython-38.pyc
 models/__pycache__/base_model.cpython-38.pyc
 models/__pycache__/amenity.cpython-38.pyc
 models/__pycache__/__init__.cpython-38.pyc
+file.json
 models/engine/__pycache__/db_storage.cpython-38.pyc
-tests/test_models/test_engine/__pycache__/__init__.cpython-38.pyc
 tests/test_models/__pycache__/__init__.cpython-38.pyc
+tests/test_models/test_engine/__pycache__/__init__.cpython-38.pyc
