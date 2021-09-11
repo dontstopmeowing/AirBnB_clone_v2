@@ -17,7 +17,9 @@ def states_list():
 
 @app.teardown_appcontext
 def storage_close(self):
-    """After each request is done, the current SQLAlchemy Session will be closed/removed."""
+    """After each request is done,
+        the current SQLAlchemy Session will be closed/removed.
+    """
     storage.close()
 
 
