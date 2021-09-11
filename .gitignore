@@ -12,3 +12,6 @@ file.json
 models/engine/__pycache__/db_storage.cpython-38.pyc
 tests/test_models/__pycache__/__init__.cpython-38.pyc
 tests/test_models/test_engine/__pycache__/__init__.cpython-38.pyc
+web_flask/7-dump.sql
+web_flask/__pycache__/__init__.cpython-38.pyc
+web_flask/__pycache__/9-states.cpython-38.pyc
