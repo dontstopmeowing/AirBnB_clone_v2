@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """ State Module for HBNB project """
+from models import storage
 import models
 from models.base_model import BaseModel, Base
 from models.city import City
@@ -17,3 +18,12 @@ class State(BaseModel, Base):
         cities = relationship("City", backref="state")
     else:
         name = ""
+
+    @property
+    def cities(self):
+        myList = []
+        new_dict = storage.all(City)
+        for key, obj in new_dict.items():
+            if self.id == obj.state_id:
+                myList.append(obj)
+        return myList
