@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 """ State Module for HBNB project """
-from models import storage
 import models
 from models.base_model import BaseModel, Base
 from models.city import City
@@ -21,8 +20,9 @@ class State(BaseModel, Base):
 
     @property
     def cities(self):
+        """Getter for the list of city instances related to state"""
         myList = []
-        new_dict = storage.all(City)
+        new_dict = models.storage.all(City)
         for key, obj in new_dict.items():
             if self.id == obj.state_id:
                 myList.append(obj)
