@@ -71,4 +71,4 @@ class DBStorage():
 
     def close(self):
         """Deserializes the JSON file to objects"""
-        self.__session.remove()
+        self.__session.close()
